@@ -1,23 +1,33 @@
 import { useState, FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
+import axiosInstance from "services/axiosConfig";
 
 const LoginPage = () => {
   const navigate = useNavigate();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [formState, setFormState] = useState<{email: string, name: string}>({email: "", name: ""});
   const [remember, setRemember] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const submit = (e: FormEvent<HTMLFormElement>) => {
+
+  const handleUserLogin = async (credentials: {email: string, name: string}) => {
+    console.log(credentials);
+    //uncomment this when the backend is ready
+    // try{
+    //   const response = await axiosInstance.post("/login", credentials);
+    //   console.log(response);
+    // }catch(error: any){
+    //   setError(error.response.data.message);
+    // }
+  };
+
+  const handleFormSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!email || !password) {
-      setError("Please enter email and password");
-      return;
+   
+    try{
+      await handleUserLogin(formState);
+    }catch(error: any){
+      setError("Invalid email or name");
     }
-    // placeholder auth flow
-    setError(null);
-    // navigate to dashboard on success
-    navigate("/");
   };
 
   return (
@@ -25,36 +35,35 @@ const LoginPage = () => {
       <div className="w-full max-w-md mx-auto p-6 rounded-2xl shadow-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
         <div className="mb-6 text-center">
           <div className="mx-auto h-12 w-12 rounded-full bg-gradient-to-br from-indigo-500 to-pink-500 flex items-center justify-center text-white font-bold">
-            LF
+            KPI
           </div>
           <h1 className="mt-4 text-2xl font-semibold text-gray-800 dark:text-gray-100">Welcome back</h1>
           <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">Sign in to continue to KPI Tracker</p>
         </div>
 
-        <form onSubmit={submit} className="space-y-4">
+        <form onSubmit={handleFormSubmit} className="space-y-4">
           {error && <div className="text-sm text-red-600 bg-red-50 dark:bg-red-900/30 p-2 rounded">{error}</div>}
 
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Email</label>
             <input
               type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              value={formState.email}
+              onChange={(e) => setFormState({...formState, email: e.target.value})}
               className="w-full px-3 py-2 rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-300"
-              placeholder="you@company.com"
+              placeholder="you@cainc.com"
               autoComplete="username"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Password</label>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Name</label>
             <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              type="text"
+              value={formState.name}
+              onChange={(e) => setFormState({...formState, name: e.target.value})}
               className="w-full px-3 py-2 rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-300"
-              placeholder="••••••••"
-              autoComplete="current-password"
+              placeholder="JohnDoe"
             />
           </div>
 

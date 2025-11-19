@@ -6,7 +6,7 @@ const App = () => {
   return (
     <Router>
       <MainLayout>
-        <AppRoutes />
+        <AppRoutes children={<></>} />
       </MainLayout>
     </Router>
   );

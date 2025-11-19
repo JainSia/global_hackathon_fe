@@ -1,11 +1,17 @@
-import { Routes, Route, Navigate } from "react-router-dom";
-import DashboardPage from "../pages/DashboardPage";
-import LoginPage from "../pages/LoginPage";
-import DashboardOverview from "../pages/DashboardOverview";
-import DashboardServices from "../pages/DashboardServices";
-import DashboardReporting from "../pages/DashboardReporting";
+import React from "react";
+import { Navigate, Route, Routes } from "react-router-dom";
+import LoginPage from "pages/LoginPage";
+import DashboardPage from "pages/DashboardPage";
+import DashboardOverview from "pages/DashboardOverview";
+import DashboardServices from "pages/DashboardServices";
+import DashboardReporting from "pages/DashboardReporting";
+import About from "pages/About";
 
-const AppRoutes = () => {
+
+
+const AppRoutes: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
   return (
     <Routes>
       <Route path="/login" element={<LoginPage />} />
@@ -15,6 +21,7 @@ const AppRoutes = () => {
         <Route index element={<DashboardOverview />} />
         <Route path="services" element={<DashboardServices />} />
         <Route path="reporting" element={<DashboardReporting />} />
+        <Route path="about" element={<About />} />
       </Route>
 
       <Route path="/" element={<Navigate to="/dashboard" replace />} />
