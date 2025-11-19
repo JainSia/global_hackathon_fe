@@ -1,5 +1,5 @@
 import { useState, FormEvent } from "react";
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import axiosInstance from "services/axiosConfig";
 
 const LoginPage = () => {
@@ -11,6 +11,7 @@ const LoginPage = () => {
 
   const handleUserLogin = async (credentials: {email: string, name: string}) => {
     console.log(credentials);
+    localStorage.setItem("user", JSON.stringify(credentials));
     //uncomment this when the backend is ready
     // try{
     //   const response = await axiosInstance.post("/login", credentials);
@@ -18,6 +19,11 @@ const LoginPage = () => {
     // }catch(error: any){
     //   setError(error.response.data.message);
     // }
+    if(credentials.email !== "" && credentials.name !== ""){
+      navigate("/dashboard", { replace: true });
+    }else{
+      setError("Invalid email or name");
+    }
   };
 
   const handleFormSubmit = async (e: FormEvent<HTMLFormElement>) => {
@@ -78,13 +84,7 @@ const LoginPage = () => {
               <span className="ml-2">Remember me</span>
             </label>
 
-            <button
-              type="button"
-              onClick={() => navigate("/")}
-              className="text-sm text-indigo-600 hover:underline"
-            >
-              Skip
-            </button>
+            
           </div>
 
           <div>

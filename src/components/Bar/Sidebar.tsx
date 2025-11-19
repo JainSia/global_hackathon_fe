@@ -52,6 +52,14 @@ const Sidebar = () => {
               About
             </Link>
           </li>
+          <li>
+            <Link
+              to="/"
+              className={`px-3 py-2 rounded-md text-sm flex items-center gap-3 ${location.pathname.startsWith("/login") ? "bg-indigo-600 text-white" : "text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800"}`}
+            >
+              Logout
+            </Link>
+          </li>
         </ul>
 
        

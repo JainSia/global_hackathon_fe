@@ -24,8 +24,8 @@ const AppRoutes: React.FC<{ children: React.ReactNode }> = ({
         <Route path="about" element={<About />} />
       </Route>
 
-      <Route path="/" element={<Navigate to="/dashboard" replace />} />
-      <Route path="*" element={<Navigate to="/dashboard" replace />} />
+      <Route path="/" element={<Navigate to="/login" replace />} />
+      {/* <Route path="*" element={<Navigate to="/dashboard" replace />} /> */}
     </Routes>
   );
 };
