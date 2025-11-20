@@ -45,7 +45,7 @@ const DashboardServices = () => {
         </div>
       )}
 
-      {/* Error state */}
+      {/* Error message is displayed if the API call fails*/}
       {error && (
         <div className="p-4 bg-red-50 dark:bg-red-900/20 rounded-lg border border-red-200 dark:border-red-800">
           <div className="text-sm text-red-900 dark:text-red-100">Error: {error}</div>

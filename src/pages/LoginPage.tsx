@@ -1,28 +1,41 @@
 import { useState, FormEvent } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
 import axiosInstance from "services/axiosConfig";
+import { generateUUID, setAuthUUID } from "utils/auth";
 
 const LoginPage = () => {
   const navigate = useNavigate();
-  const [formState, setFormState] = useState<{email: string, name: string}>({email: "", name: ""});
+  const [formState, setFormState] = useState<{username: string, password: string}>({username: "", password: ""});
   const [remember, setRemember] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
-
-  const handleUserLogin = async (credentials: {email: string, name: string}) => {
-    console.log(credentials);
-    localStorage.setItem("user", JSON.stringify(credentials));
-    //uncomment this when the backend is ready
-    // try{
-    //   const response = await axiosInstance.post("/login", credentials);
-    //   console.log(response);
-    // }catch(error: any){
-    //   setError(error.response.data.message);
-    // }
-    if(credentials.email !== "" && credentials.name !== ""){
-      navigate("/dashboard", { replace: true });
-    }else{
-      setError("Invalid email or name");
+  const handleUserLogin = async (credentials: {username: string, password: string}) => {
+    setLoading(true);
+    setError(null);
+    
+    try {
+      const response = await axiosInstance.post("/auth/login", credentials);
+      
+      if (response.data.message === "Login successful") {
+        // Generate UUID and store in localStorage
+        const uuid = generateUUID();
+        setAuthUUID(uuid);
+        
+        // Store user info if needed
+        if (remember) {
+          localStorage.setItem("user", JSON.stringify({ username: credentials.username }));
+        }
+        
+        navigate("/dashboard", { replace: true });
+      } else {
+        setError("Login failed. Please try again.");
+      }
+    } catch (err: any) {
+      setError(err.response?.data?.message || "Invalid username or password");
+      console.error("Login error:", err);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -51,25 +64,28 @@ const LoginPage = () => {
           {error && <div className="text-sm text-red-600 bg-red-50 dark:bg-red-900/30 p-2 rounded">{error}</div>}
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Email</label>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Username</label>
             <input
-              type="email"
-              value={formState.email}
-              onChange={(e) => setFormState({...formState, email: e.target.value})}
+              type="text"
+              value={formState.username}
+              onChange={(e) => setFormState({...formState, username: e.target.value})}
               className="w-full px-3 py-2 rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-300"
-              placeholder="you@cainc.com"
+              placeholder="Enter your username"
               autoComplete="username"
+              required
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Name</label>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Password</label>
             <input
-              type="text"
-              value={formState.name}
-              onChange={(e) => setFormState({...formState, name: e.target.value})}
+              type="password"
+              value={formState.password}
+              onChange={(e) => setFormState({...formState, password: e.target.value})}
               className="w-full px-3 py-2 rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-300"
-              placeholder="JohnDoe"
+              placeholder="Enter your password"
+              autoComplete="current-password"
+              required
             />
           </div>
 
@@ -90,9 +106,10 @@ const LoginPage = () => {
           <div>
             <button
               type="submit"
-              className="w-full inline-flex items-center justify-center gap-2 px-4 py-2 rounded-md bg-gradient-to-r from-indigo-600 to-pink-500 text-white font-medium hover:opacity-95 focus:outline-none focus:ring-2 focus:ring-indigo-300"
+              disabled={loading}
+              className="w-full inline-flex items-center justify-center gap-2 px-4 py-2 rounded-md bg-gradient-to-r from-indigo-600 to-pink-500 text-white font-medium hover:opacity-95 focus:outline-none focus:ring-2 focus:ring-indigo-300 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Sign in
+              {loading ? "Signing in..." : "Sign in"}
             </button>
           </div>
         </form>
