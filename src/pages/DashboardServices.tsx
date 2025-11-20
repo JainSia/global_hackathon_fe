@@ -1,9 +1,57 @@
+import { useEffect, useState } from "react";
 import MetricCard from "../components/Dashboard/MetricCard";
 import SmallKpiCard from "../components/Dashboard/SmallKpiCard";
+import { useLocation } from "react-router-dom";
+import axiosInstance from "../services/axiosConfig";
 
 const DashboardServices = () => {
+  const location = useLocation();
+  const metricData = location.state as { title?: string; value?: string; type?: string } | null;
+  
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [servicesData, setServicesData] = useState<any>(null);
+
+  useEffect(() => {
+    const fetchServicesData = async () => {
+      setLoading(true);
+      setError(null);
+      
+      try {
+        // Example API call - adjust the endpoint based on your API
+        const endpoint = metricData?.type 
+          ? `/services?metricType=${metricData.type}` 
+          : '/services';
+        
+        const response = await axiosInstance.get(endpoint);
+        setServicesData(response.data);
+      } catch (err: any) {
+        setError(err.response?.data?.message || 'Failed to fetch services data');
+        console.error('Error fetching services data:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchServicesData();
+  }, [metricData]);
+
   return (
     <div className="space-y-6">
+      {/* Loading state */}
+      {loading && (
+        <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
+          <div className="text-sm text-blue-900 dark:text-blue-100">Loading services data...</div>
+        </div>
+      )}
+
+      {/* Error state */}
+      {error && (
+        <div className="p-4 bg-red-50 dark:bg-red-900/20 rounded-lg border border-red-200 dark:border-red-800">
+          <div className="text-sm text-red-900 dark:text-red-100">Error: {error}</div>
+        </div>
+      )}
+
       {/* Services panel */}
       <div className="app-panel p-4 rounded-lg border border-gray-200 dark:border-gray-800">
         <div className="flex items-center justify-between">

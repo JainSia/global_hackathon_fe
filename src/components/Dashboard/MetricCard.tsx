@@ -3,9 +3,10 @@ interface MetricCardProps {
   value: string;
   sub?: string;
   color?: "blue" | "green" | "yellow" | "purple";
+  onClick?: () => void;
 }
 
-const MetricCard = ({ title, value, sub, color = "blue" }: MetricCardProps) => {
+const MetricCard = ({ title, value, sub, color = "blue", onClick }: MetricCardProps) => {
   const colorMap: Record<string, string> = {
     blue: "from-blue-50 to-blue-100 text-blue-800",
     green: "from-green-50 to-green-100 text-green-800",
@@ -15,7 +16,7 @@ const MetricCard = ({ title, value, sub, color = "blue" }: MetricCardProps) => {
 
   return (
     <div className={`rounded-lg p-4 bg-gradient-to-br ${colorMap[color]} border border-gray-200 dark:border-gray-700 shadow-sm`}>
-      <div className="flex items-start justify-between">
+      <div className="flex items-start justify-between" onClick={onClick}>
         <div>
           <div className="text-sm font-medium">{title}</div>
           <div className="mt-2 text-2xl font-bold">{value}</div>

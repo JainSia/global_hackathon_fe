@@ -30,10 +30,10 @@ const Sidebar = () => {
           </li>
           <li>
             <Link
-              to="/dashboard/services"
+              to="/dashboard/teams-overview"
               className={`px-3 py-2 rounded-md text-sm flex items-center gap-3 ${location.pathname.startsWith("/dashboard/services") ? "bg-indigo-600 text-white" : "text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800"}`}
             >
-              Services
+              Teams@CA
             </Link>
           </li>
           <li>
